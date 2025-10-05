@@ -33,8 +33,6 @@
 	// Filter by category
 	function filterByCategory(query: string) {
 		if (query.length < 0) {
-			allJobs = [...jobs];
-			errorMessage = '';
 			return;
 		}
 		// console.log(allJobs);
@@ -64,9 +62,9 @@
 		filterByCategory(category);
 	}
 
-	$: if(category === ''){
-		fetchJobs()
-	}
+	// $: if(category === ''){
+	// 	fetchJobs()
+	// }
 </script>
 
 <main class="h-full w-full px-2 py-10 font-normal">

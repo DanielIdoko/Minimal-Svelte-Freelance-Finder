@@ -4,7 +4,7 @@
 </script>
 
 <div
-	class="relative min-h-[160px] w-full cursor-pointer rounded-lg border border-slate-800/16 p-2 hover:shadow-sm"
+	class="relative min-h-[165px] w-full cursor-pointer rounded-lg border border-slate-800/16 p-2 hover:shadow-sm"
 >
 	<div class="flex h-fit w-full items-center">
 		<h3 class="text-md flex-1 font-semibold text-black">
@@ -12,7 +12,7 @@
 		</h3>
 		<span class="rounded-full bg-black/5 px-2 py-1 text-xs text-slate-700">
 			{job['project-tags']?.length > 30
-				? job['project-tags'].slice(0, 30) + '...'
+				? job['project-tags'].slice(0, 14) + '...'
 				: job['project-tags']}
 		</span>
 	</div>
