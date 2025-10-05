@@ -1,15 +1,25 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { getContext, onMount, setContext } from 'svelte';
 	import Header from '../components/Header.svelte';
 	import Job from '../components/Job.svelte';
 	import { BASEURL, options } from '../utils/api';
 	import { ArrowRightIcon, Loader } from '@lucide/svelte';
+	import Footer from '../components/Footer.svelte';
+	import SearchBar from '../components/SearchBar.svelte';
+	import { writable } from 'svelte/store';
 
 	let jobs: any[] = [];
 	let allJobs: any[] = []; // keep an unfiltered copy
 	let errorMessage = '';
 	let isLoading = false;
 	let category: string = '';
+
+	let searchTerm: string = '';
+
+	// Contexts
+	// Search Bar contexts
+	let searchBarVisible = writable(false);
+	setContext('search-bar-visible', searchBarVisible);
 
 	// Fetch jobs from API
 	async function fetchJobs() {
@@ -54,7 +64,30 @@
 		}
 	}
 
-	// Fetch on mount
+	// Filter by query
+	function handleSearch(query: string) {
+		if (query.length < 0) {
+			return;
+		}
+		// Search for jobs
+		const searchResults = allJobs.filter((job) => {
+			const tags = job['project-tags']?.toLowerCase() || '';
+			return tags.includes(query.toLowerCase());
+		});
+
+		console.log(searchResults);
+		allJobs = [...searchResults];
+
+		if (searchResults.length === 0) {
+			errorMessage = `No Results found for "${query}"`;
+			jobs = [];
+		} else {
+			errorMessage = '';
+			jobs = searchResults;
+		}
+	}
+
+	// // Fetch on mount
 	onMount(fetchJobs);
 
 	// Reactively filter when user types
@@ -62,48 +95,58 @@
 		filterByCategory(category);
 	}
 
-	// $: if(category === ''){
-	// 	fetchJobs()
-	// }
+	$: if(category === ''){
+		fetchJobs()
+	}
 </script>
 
-<main class="h-full w-full px-2 py-10 font-normal">
+<main class="h-full w-full font-normal">
 	<Header />
 
-	<h2 class="mt-8 p-1 px-2 text-[22px] text-black">Find Freelance Jobs</h2>
+	<section class="h-full w-full px-3 py-5">
+		<h2 class="mt-8 mb-3 p-1 px-2 text-xl text-black">Your Freelancer Job Companion</h2>
 
-	<!-- Search Bar -->
-	<div
-		class="sticky top-20 z-30 flex h-fit w-full flex-col items-center justify-center gap-3 rounded-lg border border-slate-800/15 bg-white p-2 shadow-md md:h-12 md:flex-row"
-	>
-		<div class="flex h-fit w-full items-center gap-2 md:mt-0">
-			<p class="text-sm text-black/50 md:ml-2">Category:</p>
-			<input
-				type="text"
-				placeholder="UI/UX, Product Management..."
-				class="w-full rounded-md border border-slate-100 p-1 text-sm focus:outline-slate-100 md:ml-3"
-				bind:value={category}
-			/>
+		{#if $searchBarVisible}
+			<SearchBar {searchTerm} {handleSearch}/>
+		{/if}
+
+		<!-- Search Bar -->
+		<div
+			class={`sticky ${$searchBarVisible && 'top-37'} top-20 z-30 flex h-fit w-full flex-col items-center justify-center gap-3 rounded-lg  bg-white p-2 shadow-md md:h-12 md:flex-row`}
+		>
+			<div class="flex h-fit w-full items-center gap-2 md:mt-0">
+				<p class="text-sm text-black/50 md:ml-2">Category:</p>
+				<input
+					type="text"
+					placeholder="UI/UX, Product Management..."
+					class="w-full rounded-md border border-slate-100/50 p-1 text-sm text-slate-600 focus:outline-slate-100 md:ml-3"
+					bind:value={category}
+				/>
+			</div>
 		</div>
-	</div>
 
-	<!-- Loading/Error States -->
-	{#if isLoading}
-		<div class="flex h-full w-full items-center justify-center p-1">
-			<p class="mt-4 flex items-center justify-center gap-2 text-black/60">
-				<Loader size={20} /> Loading
-			</p>
+		<!-- Loading/Error States -->
+		{#if isLoading}
+			<div class="flex h-full w-full items-center justify-center p-1">
+				<p class="mt-4 flex items-center justify-center gap-2 text-black/60">
+					<Loader size={20} /> Loading
+				</p>
+			</div>
+		{:else if errorMessage}
+			<p class="mt-4 text-center text-red-500">{errorMessage}</p>
+		{:else if jobs.length === 0}
+			<div class="flex h-screen w-full items-center justify-center">
+				<p class="mt-4 text-center text-2xl text-black/70">⚠ No Jobs Found at the moment</p>
+			</div>
+		{/if}
+
+		<!-- Job List -->
+		<div class="mt-10 grid h-full w-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+			{#each jobs as job (job.id || Math.random())}
+				<Job {job} />
+			{/each}
 		</div>
-	{:else if errorMessage}
-		<p class="mt-4 text-center text-red-500">{errorMessage}</p>
-	{:else if jobs.length === 0}
-		<p class="mt-4 text-center text-2xl text-black/70">Sorry, no jobs were found</p>
-	{/if}
 
-	<!-- Job List -->
-	<div class="mt-10 grid h-full w-full grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-		{#each jobs as job (job.id || Math.random())}
-			<Job {job} />
-		{/each}
-	</div>
+		<Footer />
+	</section>
 </main>
