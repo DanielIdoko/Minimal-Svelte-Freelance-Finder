@@ -4,6 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
+	base: process.env.VITE_BASE_PATH || '/elevare-freelancer',
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
