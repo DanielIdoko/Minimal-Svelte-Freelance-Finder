@@ -1,4 +1,5 @@
 # Minimal Svelte Freelance job finder App
+This will help you find specific jobs faster and easier
 
 ## ✨ Features
 
