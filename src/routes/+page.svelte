@@ -63,6 +63,10 @@
 	$: if (category !== '') {
 		filterByCategory(category);
 	}
+
+	$: if(category === ''){
+		fetchJobs()
+	}
 </script>
 
 <main class="h-full w-full px-2 py-10 font-normal">
