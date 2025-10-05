@@ -1,38 +1,26 @@
-# sv
+# Minimal Svelte Freelance job finder App
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+## ✨ Features
 
-## Creating a project
+- Browse Freelance gigs/jobs
+- View Jobs on Freelancer
+- Search for gigs by category
 
-If you're seeing this, you've probably already done this step. Congrats!
+## 📚 Stack
 
-```sh
-# create a new project in the current directory
-npx sv create
+- Svelte
+- Lucide React - Icons Library
+- Tailwind CSS
 
-# create a new project in my-app
-npx sv create my-app
+## 🤸‍♂️ How to get started
+
+Before getting started make sure to have nodejs installed on your system
+
+1. Clone this repository or download as zip file then unzip.
+2. Open this folder through command line or any IDE
+3. Run
+
+```js
+ npm i - // Install neccessary svelte packages
+ npm run dev --open - // Start development server and open on browser
 ```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
